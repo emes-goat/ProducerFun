@@ -31,7 +31,7 @@ public class Consumer implements Runnable {
             }
             System.out.println("Killing consumer");
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            System.out.println("Interrupted Consumer");
         }
     }
 

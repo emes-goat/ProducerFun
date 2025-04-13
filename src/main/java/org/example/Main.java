@@ -27,7 +27,7 @@ public class Main {
                 eventsProduced, eventsDropped, lowPriorityEventsCount, highPriorityEventsCount)).toList();
         producers.forEach(threadPool::execute);
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 2; i++) {
             System.out.println("Queue size: " + blockingQueue.size());
             System.out.println("Events produced: " + eventsProduced.get());
             System.out.println("Events processed: " + eventsProcessed.get());
@@ -47,8 +47,6 @@ public class Main {
             Thread.sleep(1000);
         }
 
-//          consumers.forEach(it -> it.setShutdown(true));
-            producers.forEach(it -> it.setShutdown(true));
-            threadPool.shutdown();
+        threadPool.shutdownNow();
     }
 }

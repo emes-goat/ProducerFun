@@ -25,29 +25,26 @@ public class Producer implements Runnable {
 
     @Override
     public void run() {
-        while (!shutdown && !Thread.currentThread().isInterrupted()) {
-            var delay = ThreadLocalRandom.current().nextInt(1000) + 300;
-            try {
+        try {
+            while (!shutdown && !Thread.currentThread().isInterrupted()) {
+                var delay = ThreadLocalRandom.current().nextInt(1000) + 300;
                 Thread.sleep(delay);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
 
-            var event = new Event(UUID.randomUUID(), "ABC", ThreadLocalRandom.current().nextInt(2000) + 500, ThreadLocalRandom.current().nextInt(2));
-            eventsProduced.incrementAndGet();
-            boolean insertionResult = queue.offer(event);
-            int i = event.priority() == 0 ? lowPriorityEventsCount.incrementAndGet() : highPriorityEventsCount.incrementAndGet();
+                var event = new Event(UUID.randomUUID(), "ABC", ThreadLocalRandom.current().nextInt(2000) + 500, ThreadLocalRandom.current().nextInt(2));
+                eventsProduced.incrementAndGet();
+                boolean insertionResult = queue.offer(event);
+                int i = event.priority() == 0 ? lowPriorityEventsCount.incrementAndGet() : highPriorityEventsCount.incrementAndGet();
 
-            if (!insertionResult) {
-                eventsDropped.incrementAndGet();
+                if (!insertionResult) {
+                    eventsDropped.incrementAndGet();
 
-                try {
                     Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
                 }
             }
+        } catch (InterruptedException e) {
+            System.out.println("Interrupted Producer");
         }
+
         System.out.println("Killing producer");
     }
 
